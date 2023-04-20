@@ -8,6 +8,7 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
+library(plyr)
 library(ggplot2)
 ```
 
@@ -51,10 +52,25 @@ sum(accidentData$DRUNK_DR>=1)
 
 ## Part 2: Connecting Data
 
+```{r}
+person <- "https://raw.githubusercontent.com/yumouqiu/DS202-Spring2023/main/Practice/data/fars2016/person.csv"
+personData <- read.csv(person)
+View(personData)
+```
 Connect to the person table. Identify drivers (PER_TYP == 1, see fars manual ) and subset on them.
+
+```{r}
+subset_value <- personData[personData$PER_TYP==1, ]
+View(subset_value)
+```
 
 
 Join accident and driver table (work out which variable(s) to use)
+
+```{r}
+newTable <- join(accidentData, subset_value, by = "ST_CASE")
+View(newTable)
+```
 
 
 Tally the number of accidents by day of the week (DAY_WEEK), hour of the day (HOUR) and gender (SEX). Visualize the results!
