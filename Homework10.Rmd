@@ -1,6 +1,6 @@
 ---
 title: "Homework 10"
-author: "Ryan Corydon"
+author: "Ryan Corydon and Emma Podlich"
 date: "2023-04-20"
 output: html_document
 ---
@@ -8,6 +8,7 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
+library(ggplot2)
 ```
 
 ## R Markdown
@@ -18,7 +19,7 @@ accidentData = read.csv(accident)
 View(accidentData)
 ```
 
-## PArt 1
+## Part 1: Accident Data
 
 Are there some days of the week where more accidents happen than on others (use variable DAY_WEEK)?
 ```{r}
@@ -33,16 +34,27 @@ head(dailyAccidentSorted,7)
 ```
 
 
-what time of the day do accidents happen (use variable HOUR)?
+What time of the day do accidents happen (use variable HOUR)?
 
 ```{r}
-#hi
+mean_value <- mean(accidentData$HOUR)
+mean_value
+#The average time an accident happens is at 13.4. If this is military hours you can assume most accidents are taking place around 1:00 PM.
 ```
-
-
-what is the number of accidents with at least one drunk driver (use variable DRUNK_DR)?
+What is the number of accidents with at least one drunk driver (use variable DRUNK_DR)?
 
 ```{r}
-#hi
+sum(accidentData$DRUNK_DR>=1)
+#The number of accidents with at least 1 drunk driver is 8720 accidents within the data set.
+
 ```
 
+## Part 2: Connecting Data
+
+Connect to the person table. Identify drivers (PER_TYP == 1, see fars manual ) and subset on them.
+
+
+Join accident and driver table (work out which variable(s) to use)
+
+
+Tally the number of accidents by day of the week (DAY_WEEK), hour of the day (HOUR) and gender (SEX). Visualize the results!
