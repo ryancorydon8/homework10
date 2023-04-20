@@ -1,0 +1,48 @@
+---
+title: "Homework 10"
+author: "Ryan Corydon"
+date: "2023-04-20"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+```
+
+## R Markdown
+
+```{r}
+accident <- "https://raw.githubusercontent.com/yumouqiu/DS202-Spring2023/main/Practice/data/fars2016/accident.csv"
+accidentData = read.csv(accident)
+View(accidentData)
+```
+
+## PArt 1
+
+Are there some days of the week where more accidents happen than on others (use variable DAY_WEEK)?
+```{r}
+
+dailyAccident <- accidentData %>% group_by(DAY_WEEK) %>% summarise(count = n()) %>% ungroup()
+dailyAccidentSorted <- dailyAccident %>% arrange(desc(count))
+head(dailyAccidentSorted,7)
+
+```
+```{r}
+#The day of the week 7 has the most occurences of accidents of the week. Day 3 has the least.
+```
+
+
+what time of the day do accidents happen (use variable HOUR)?
+
+```{r}
+#hi
+```
+
+
+what is the number of accidents with at least one drunk driver (use variable DRUNK_DR)?
+
+```{r}
+#hi
+```
+
