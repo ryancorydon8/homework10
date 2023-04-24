@@ -7,9 +7,10 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(dplyr)
 library(plyr)
+library(dplyr)
 library(ggplot2)
+library(maps)
 ```
 
 ## R Markdown
@@ -20,16 +21,34 @@ accidentData = read.csv(accident)
 View(accidentData)
 ```
 
+## Data Background : Map Plot
+
+```{r}
+accidentData %>% ggplot(aes(x = LONGITUD, y = LATITUDE)) + geom_point(size = 0.05, colour = 'red') # Plot of All Data 
+
+states <- map_data("state")
+head(states)
+
+states %>% ggplot(aes(x = long, y = lat)) + 
+  geom_path(aes(group = group)) +
+  geom_point(aes(x = LONGITUD, y = LATITUDE), size = 0.05, color = 'red', data = accidentData %>% filter(LONGITUD < 0, LONGITUD > -130)) # Plot with US Data
+
+```
+
 ## Part 1: Accident Data
 
 Are there some days of the week where more accidents happen than on others (use variable DAY_WEEK)?
+
 ```{r}
 
 dailyAccident <- accidentData %>% group_by(DAY_WEEK) %>% summarise(count = n()) %>% ungroup()
 dailyAccidentSorted <- dailyAccident %>% arrange(desc(count))
 head(dailyAccidentSorted,7)
 
+accidentData %>% group_by(DAY_WEEK) %>% tally()
+
 ```
+
 ```{r}
 #The day of the week 7 has the most occurences of accidents of the week. Day 3 has the least.
 ```
@@ -40,12 +59,15 @@ What time of the day do accidents happen (use variable HOUR)?
 ```{r}
 mean_value <- mean(accidentData$HOUR)
 mean_value
+
 #The average time an accident happens is at 13.4. If this is military hours you can assume most accidents are taking place around 1:00 PM.
 ```
+
 What is the number of accidents with at least one drunk driver (use variable DRUNK_DR)?
 
 ```{r}
 sum(accidentData$DRUNK_DR>=1)
+
 #The number of accidents with at least 1 drunk driver is 8720 accidents within the data set.
 
 ```
@@ -57,6 +79,7 @@ person <- "https://raw.githubusercontent.com/yumouqiu/DS202-Spring2023/main/Prac
 personData <- read.csv(person)
 View(personData)
 ```
+
 Connect to the person table. Identify drivers (PER_TYP == 1, see fars manual ) and subset on them.
 
 ```{r}
@@ -68,9 +91,17 @@ View(subset_value)
 Join accident and driver table (work out which variable(s) to use)
 
 ```{r}
-newTable <- join(accidentData, subset_value, by = "ST_CASE")
-View(newTable)
+newTable <- full_join(accidentData, subset_value)
 ```
 
 
 Tally the number of accidents by day of the week (DAY_WEEK), hour of the day (HOUR) and gender (SEX). Visualize the results!
+
+```{r}
+Tally = newTable %>% group_by(DAY_WEEK, HOUR, SEX) %>% tally()
+Tally
+
+Tally %>% ggplot(aes(x = DAY_WEEK, y = n)) + geom_point(aes(colour = HOUR)) + facet_grid(SEX~ ., scale = "free_y") + geom_jitter() + ggtitle("Facet By SEX") + ylab("tally (n)")
+
+```
+
